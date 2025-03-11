@@ -17,14 +17,14 @@ def load_param(file_name:str)->Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndar
 
     with open(file_name, "r") as f:
         data = json.load(f)
-    cameraMatrixL = np.array(data["cameraMatrixL"], dtype=np.float32)
-    distCoeffsL = np.array(data["distCoeffsL"], dtype=np.float32)
-    cameraMatrixR = np.array(data["cameraMatrixR"], dtype=np.float32)
-    distCoeffsR = np.array(data["distCoeffsR"], dtype=np.float32)
-    R = np.array(data["R"], dtype=np.float32)
-    T = np.array(data["T"], dtype=np.float32)
-    E = np.array(data["E"], dtype=np.float32)
-    F = np.array(data["F"], dtype=np.float32)
+    cameraMatrixL = np.array(data["cameraMatrixL"], dtype=np.float64)
+    distCoeffsL = np.array(data["distCoeffsL"], dtype=np.float64)
+    cameraMatrixR = np.array(data["cameraMatrixR"], dtype=np.float64)
+    distCoeffsR = np.array(data["distCoeffsR"], dtype=np.float64)
+    R = np.array(data["R"], dtype=np.float64)
+    T = np.array(data["T"], dtype=np.float64)
+    E = np.array(data["E"], dtype=np.float64)
+    F = np.array(data["F"], dtype=np.float64)
 
     return cameraMatrixL, distCoeffsL, cameraMatrixR, distCoeffsR, R, T, E, F
 

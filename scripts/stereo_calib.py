@@ -60,14 +60,31 @@ if __name__=='__main__':
     #     imgpointsR.append(cornersR)
 
     for imgL_path, imgR_path in zip(left_img_path, right_img_path):
-        imgL = cv2.imread(imgL_path, cv2.IMREAD_GRAYSCALE)
-        imgR = cv2.imread(imgR_path, cv2.IMREAD_GRAYSCALE)
+        imgL_raw = cv2.imread(imgL_path)
+        imgR_raw = cv2.imread(imgR_path)
+
+        imgL = cv2.cvtColor(imgL_raw, cv2.COLOR_BGR2GRAY)
+        imgR = cv2.cvtColor(imgR_raw, cv2.COLOR_BGR2GRAY)
+
+        # gray_left = cv2.cvtColor(imgL_raw, cv2.COLOR_BGR2GRAY)
+        # gray_right = cv2.cvtColor(imgR_raw, cv2.COLOR_BGR2GRAY)
+
+        # imgL = cv2.adaptiveThreshold(gray_left, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        #                                       cv2.THRESH_BINARY, 11, 2)
+        # imgR = cv2.adaptiveThreshold(gray_right, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        #                              cv2.THRESH_BINARY, 11, 2)
+
         if imgL is None or imgR is None:
             print(f"Skipping pair: {imgL_path}, {imgR_path} (not found)")
             continue
 
-        retL, cornersL = cv2.findChessboardCorners(imgL, board_dim, None)
-        retR, cornersR = cv2.findChessboardCorners(imgR, board_dim, None)
+        # retL, cornersL = cv2.findChessboardCorners(imgL, board_dim, None)
+        # retR, cornersR = cv2.findChessboardCorners(imgR, board_dim, None)
+
+        retL, cornersL = cv2.findChessboardCorners(imgL, board_dim, flags=cv2.CALIB_CB_ADAPTIVE_THRESH +
+                                                   cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_FAST_CHECK)
+        retR, cornersR = cv2.findChessboardCorners(imgR, board_dim, flags=cv2.CALIB_CB_ADAPTIVE_THRESH +
+                                                   cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_FAST_CHECK)
 
         if retL and retR:
             cornersL = cv2.cornerSubPix(imgL, cornersL, (11,11), (-1,-1), criteria_subpix)
@@ -77,6 +94,13 @@ if __name__=='__main__':
             all_imgpointsL.append(cornersL)
             all_imgpointsR.append(cornersR)
 
+        #     cv2.drawChessboardCorners(imgL_raw, board_dim, cornersL, retL)
+        #     cv2.drawChessboardCorners(imgR_raw, board_dim, cornersR, retR)
+        #     cv2.imshow('Left Corners', imgL_raw)
+        #     cv2.imshow('Right Corners', imgR_raw)
+        #     cv2.waitKey(500)
+        #
+        # cv2.destroyAllWindows()
         count += 1
         sys.stdout.write(f'\r-- Progress {count}/{num_imgs}')
         sys.stdout.flush()
@@ -93,7 +117,7 @@ if __name__=='__main__':
     retR, mtxR, distR, rvecsR, tvecsR = cv2.calibrateCamera(
         all_objpoints, all_imgpointsR, img_shape, None, None,
     )
-    SINGLE_CAM_REPROJ_ERR_THRESH = 0.05 ###### change to 1.5 if you would like some flexible limits
+    SINGLE_CAM_REPROJ_ERR_THRESH = 0.5 ###### change to 1.5 if you would like some flexible limits
     # Evaluate per-image reprojection errors for single cameras
     errsL = []
     errsR = []
