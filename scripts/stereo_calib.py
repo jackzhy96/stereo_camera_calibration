@@ -117,7 +117,7 @@ if __name__=='__main__':
     retR, mtxR, distR, rvecsR, tvecsR = cv2.calibrateCamera(
         all_objpoints, all_imgpointsR, img_shape, None, None,
     )
-    SINGLE_CAM_REPROJ_ERR_THRESH = 0.5 ###### change to 1.5 if you would like some flexible limits
+    SINGLE_CAM_REPROJ_ERR_THRESH = 1.0 ###### change to 1.5 if you would like some flexible limits
     # Evaluate per-image reprojection errors for single cameras
     errsL = []
     errsR = []
